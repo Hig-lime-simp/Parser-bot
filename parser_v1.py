@@ -50,7 +50,13 @@ def init_driver(): # Инициализация драйвера + параме�
             )
     return driver
 
+# if __name__ == "__main__":
+
 ForPostJSon, driver, old_data = init()
+
+with open('data.json', 'w', encoding='utf-8') as f:
+     json.dump(ForPostJSon, f, ensure_ascii=False, indent=4)
+f.close()
 
 while True:
      New_html = get_review(driver, "https://2gis.ru/volzhsky/firm/70000001056730848/tab/reviews?m=44.725975%2C48.804477%2F19.88")
@@ -60,5 +66,10 @@ while True:
           time.sleep(900)
      else:
           ForPostJSon = compilation_json(new_data, get_discription("._83kmcy", New_html))
+
           old_data = new_data
+
+          with open('data.json', 'w', encoding='utf-8') as f:
+               json.dump(ForPostJSon, f, ensure_ascii=False, indent=4)
+          f.close()
           time.sleep(900)
