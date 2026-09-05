@@ -7,19 +7,23 @@ from selenium_stealth import stealth
 from bs4 import BeautifulSoup as bs
 import time
 
+url = "https://public-api.reviews.2gis.com/3.0/branches/70000001056730848/reviews?limit=50&offset=0&is_advertiser=false&fields=meta.providers,meta.branch_rating,meta.branch_reviews_count,meta.total_count,reviews.hiding_reason,reviews.emojis,reviews.trust_factors&rated=true&sort_by=trust&key=6e7e1929-4ea9-4a5d-8c05-d601860389bd&locale=ru_RU"
+
+
+
 def init(): # Инициализация скрипта + первый прогон парсера и сохранение данных в json
     driver = init_driver()
-    html = get_review(driver, "https://2gis.ru/volzhsky/firm/70000001056730848/tab/reviews?m=44.725975%2C48.804477%2F19.88")
+    html = get_review(driver, "https://2gis.ru/volzhsky/firm/70000001056730848/tab/reviews?m=44.726081%2C48.804554%2F16")
     title = get_title("._19h0cqe", html)
     dis = get_discription("._83kmcy", html)
     arr =  compilation_json(title, dis)
     return arr, driver, title
 
-def compilation_json(title, discription): # Функция по сбору json паралельной записью в словарь
+def compilation_json(title, discription): # Функция по сбору json паралельной записью в массив
     arr = []
     for i in range(0, len(title)):
-          arr.append({title[i]: discription[i]})
-    return json.dumps(arr, ensure_ascii=False)
+          arr.append([title[i], discription[i]])
+    return arr
 
 def get_discription(class_name, html): # Простой поиск по имени класса
      ListOfDis = []
@@ -59,7 +63,7 @@ with open('data.json', 'w', encoding='utf-8') as f:
 f.close()
 
 while True:
-     New_html = get_review(driver, "https://2gis.ru/volzhsky/firm/70000001056730848/tab/reviews?m=44.725975%2C48.804477%2F19.88")
+     New_html = get_review(driver, "https://2gis.ru/volzhsky/firm/70000001056730848/tab/reviews?m=44.726081%2C48.804554%2F16")
      new_data = get_title("._19h0cqe", New_html)
 
      if old_data == new_data: # Сравнение полученых title с сохранеными для оптимизации запросов
